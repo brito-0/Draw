@@ -22,13 +22,13 @@ public class CanvasView extends View implements View.OnTouchListener
 
     private final List<Drawing> drawings = new ArrayList<>();
     private Drawing current;// , redo = null;
-    private Stack<Drawing> redoSt = new Stack<>();
+    private final Stack<Drawing> redoSt = new Stack<>();
     private int N = 0;
 
     // 15.f
     private static final float paintSize = 16.f;
 
-    private static Button buttonUndo, buttonRedo;
+    private Button buttonUndo, buttonRedo;
 
 
     @SuppressLint("ClickableViewAccessibility")
