@@ -1,5 +1,7 @@
 package com.example.draw;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,10 +54,18 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        binding.buttonClear.setOnClickListener(v -> cView.clearDrawings());
+//        binding.buttonClear.setOnClickListener(v -> cView.clearDrawings());
         binding.buttonUndo.setOnClickListener(v -> cView.undoDrawings());
 //        binding.buttonRedo.setOnClickListener(v -> cView.redoDrawings());
         binding.buttonRedo.setOnClickListener(v -> cView.redoStDrawings());
+
+        binding.buttonClear.setOnClickListener(v ->
+                new AlertDialog.Builder(this)
+                        .setTitle("clear canvas?")
+                        .setMessage("this will clear everything on the canvas.\ryou also wont be able to use undo or redo afterwards.")
+                        .setPositiveButton("Confirm",(dialog,which) -> cView.clearDrawings())
+                        .setNegativeButton("cancel",(dialog,which) -> {})
+                        .show());
     }
 
     @Override
