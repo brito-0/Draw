@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding.buttonClear.setOnClickListener(v -> cView.clearDrawings());
         binding.buttonUndo.setOnClickListener(v -> cView.undoDrawings());
+        binding.buttonRedo.setOnClickListener(v -> cView.redoDrawings());
     }
 
     @Override

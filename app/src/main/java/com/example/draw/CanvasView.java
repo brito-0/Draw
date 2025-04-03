@@ -18,7 +18,7 @@ public class CanvasView extends View implements View.OnTouchListener
     private final Paint paintOld = new Paint(), paint = new Paint();
 
     private final List<Drawing> drawings = new ArrayList<>();
-    private Drawing current;
+    private Drawing current, redo = null;
     private int N = 0;
 
     // 15.f
@@ -50,22 +50,37 @@ public class CanvasView extends View implements View.OnTouchListener
         Log.d("Draws","0");
     }
 
+    private void addDrawing(final Drawing d)
+    {
+        drawings.add(d);
+        current = new Drawing();
+        ++N;
+
+        invalidate();
+
+        Log.d("Drawings",String.valueOf(N));
+    }
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP)
         {
-//            if (current.size() > 1) drawings.add(current);
-            drawings.add(current);
-            current = new Drawing();
-            ++N;
+////            if (current.size() > 1) drawings.add(current);
+//            drawings.add(current);
+//            current = new Drawing();
+//            ++N;
+//
+//            invalidate();
+//
+////            Log.d("Drawings",String.valueOf(drawings.size()));
+//            Log.d("Drawings",String.valueOf(N));
 
-            invalidate();
-
-//            Log.d("Drawings",String.valueOf(drawings.size()));
-            Log.d("Drawings",String.valueOf(N));
+            addDrawing(current);
 
             return true;
         }
+
+        if (redo != null) redo = null;
 
         CPoint p = new CPoint();
         p.x = event.getX();
@@ -93,8 +108,19 @@ public class CanvasView extends View implements View.OnTouchListener
         if (N == 0) return false;
 
         current = new Drawing();
-        drawings.remove(--N);
+
+        redo = drawings.get(--N);
+        drawings.remove(N);
         invalidate();
+        return true;
+    }
+
+    public boolean redoDrawings()
+    {
+        if (redo == null) return false;
+
+        addDrawing(redo);
+        redo = null;
         return true;
     }
 

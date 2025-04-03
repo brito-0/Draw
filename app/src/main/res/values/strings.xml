@@ -9,4 +9,5 @@
 
     <string name="button_clear">clear</string>
     <string name="button_undo">undo</string>
+    <string name="button_redo">redo</string>
 </resources>
