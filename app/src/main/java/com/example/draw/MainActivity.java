@@ -1,10 +1,8 @@
 package com.example.draw;
 
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
-import androidx.constraintlayout.utils.widget.MockView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -13,7 +11,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.draw.databinding.ActivityMainBinding;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 
-        cLayout = binding.canvasView;
+        cLayout = binding.aCanvasView;
         CanvasView cView = new CanvasView(this);
         cLayout.addView(cView);
 
@@ -53,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
         binding.buttonClear.setOnClickListener(v -> cView.clearDrawings());
+        binding.buttonUndo.setOnClickListener(v -> cView.undoDrawings());
     }
 
     @Override

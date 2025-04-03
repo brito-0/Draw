@@ -8,4 +8,5 @@
     <string name="previous">Previous</string>
 
     <string name="button_clear">clear</string>
+    <string name="button_undo">undo</string>
 </resources>

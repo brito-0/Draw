@@ -19,6 +19,7 @@ public class CanvasView extends View implements View.OnTouchListener
 
     private final List<Drawing> drawings = new ArrayList<>();
     private Drawing current;
+    private int N = 0;
 
     // 15.f
     private static final float paintSize = 16.f;
@@ -56,10 +57,12 @@ public class CanvasView extends View implements View.OnTouchListener
 //            if (current.size() > 1) drawings.add(current);
             drawings.add(current);
             current = new Drawing();
+            ++N;
 
             invalidate();
 
-            Log.d("Drawings",String.valueOf(drawings.size()));
+//            Log.d("Drawings",String.valueOf(drawings.size()));
+            Log.d("Drawings",String.valueOf(N));
 
             return true;
         }
@@ -72,11 +75,27 @@ public class CanvasView extends View implements View.OnTouchListener
         return true;
     }
 
-    public void clearDrawings()
+    public boolean clearDrawings()
     {
+//        if (drawings.isEmpty()) return false;
+        if (N == 0) return false;
+
         current = new Drawing();
         drawings.clear();
+        N = 0;
         invalidate();
+        return true;
+    }
+
+    public boolean undoDrawings()
+    {
+//        if (drawings.isEmpty()) return false;
+        if (N == 0) return false;
+
+        current = new Drawing();
+        drawings.remove(--N);
+        invalidate();
+        return true;
     }
 
 
