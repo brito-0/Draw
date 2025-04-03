@@ -8,9 +8,12 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 
 public class CanvasView extends View implements View.OnTouchListener
@@ -18,11 +21,15 @@ public class CanvasView extends View implements View.OnTouchListener
     private final Paint paintOld = new Paint(), paint = new Paint();
 
     private final List<Drawing> drawings = new ArrayList<>();
-    private Drawing current, redo = null;
+    private Drawing current;// , redo = null;
+    private Stack<Drawing> redoSt = new Stack<>();
     private int N = 0;
 
     // 15.f
     private static final float paintSize = 16.f;
+
+    private static Button buttonUndo, buttonRedo;
+
 
     @SuppressLint("ClickableViewAccessibility")
     public CanvasView(Context context)
@@ -40,6 +47,28 @@ public class CanvasView extends View implements View.OnTouchListener
         current = new Drawing();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    public CanvasView(Context context, Button bu, Button br)
+    {
+        super(context);
+
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+        this.setOnTouchListener(this);
+        paintOld.setColor(Color.RED);
+        paintOld.setStrokeWidth(paintSize);
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(paintSize);
+
+        current = new Drawing();
+
+        buttonUndo = bu;
+        buttonRedo = br;
+
+        buttonUndo.setEnabled(false);
+        buttonRedo.setEnabled(false);
+    }
+
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
@@ -55,6 +84,8 @@ public class CanvasView extends View implements View.OnTouchListener
         drawings.add(d);
         current = new Drawing();
         ++N;
+
+        checkUndoButton();
 
         invalidate();
 
@@ -80,7 +111,12 @@ public class CanvasView extends View implements View.OnTouchListener
             return true;
         }
 
-        if (redo != null) redo = null;
+//        if (redo != null) redo = null;
+        if (!redoSt.isEmpty())
+        {
+            redoSt.clear();
+            checkRedoButton();
+        }
 
         CPoint p = new CPoint();
         p.x = event.getX();
@@ -93,11 +129,18 @@ public class CanvasView extends View implements View.OnTouchListener
     public boolean clearDrawings()
     {
 //        if (drawings.isEmpty()) return false;
-        if (N == 0) return false;
+        if (N == 0 && redoSt.isEmpty()) return false;
 
         current = new Drawing();
         drawings.clear();
         N = 0;
+
+//        redo = null;
+        redoSt.clear();
+
+        checkUndoButton();
+        checkRedoButton();
+
         invalidate();
         return true;
     }
@@ -109,19 +152,44 @@ public class CanvasView extends View implements View.OnTouchListener
 
         current = new Drawing();
 
-        redo = drawings.get(--N);
+//        redo = drawings.get(--N);
+        redoSt.push(drawings.get(--N));
+        checkRedoButton();
+
         drawings.remove(N);
+        checkUndoButton();
+
         invalidate();
         return true;
     }
 
-    public boolean redoDrawings()
-    {
-        if (redo == null) return false;
+//    public boolean redoDrawings()
+//    {
+//        if (redo == null) return false;
+//
+//        addDrawing(redo);
+//        redo = null;
+//        return true;
+//    }
 
-        addDrawing(redo);
-        redo = null;
+    public boolean redoStDrawings()
+    {
+        if (redoSt.isEmpty()) return false;
+
+        addDrawing(redoSt.pop());
+        checkRedoButton();
+
         return true;
+    }
+
+    private void checkUndoButton()
+    {
+        buttonUndo.setEnabled(!drawings.isEmpty());
+    }
+
+    private void checkRedoButton()
+    {
+        buttonRedo.setEnabled(!redoSt.isEmpty());
     }
 
 

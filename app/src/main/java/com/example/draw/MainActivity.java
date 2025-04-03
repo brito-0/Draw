@@ -30,7 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         cLayout = binding.aCanvasView;
-        CanvasView cView = new CanvasView(this);
+
+//        CanvasView cView = new CanvasView(this);
+        CanvasView cView = new CanvasView(this,binding.buttonUndo,binding.buttonRedo);
+
         cLayout.addView(cView);
 
 
@@ -51,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
         binding.buttonClear.setOnClickListener(v -> cView.clearDrawings());
         binding.buttonUndo.setOnClickListener(v -> cView.undoDrawings());
-        binding.buttonRedo.setOnClickListener(v -> cView.redoDrawings());
+//        binding.buttonRedo.setOnClickListener(v -> cView.redoDrawings());
+        binding.buttonRedo.setOnClickListener(v -> cView.redoStDrawings());
     }
 
     @Override

@@ -40,17 +40,45 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/button_redo"
+            android:id="@+id/button_fake_redo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:alpha=".5"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
             android:text="@string/button_redo"
             app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.95"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button_redo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
             android:minHeight="0dp"
-            android:minWidth="0dp" />
+            android:text="@string/button_redo"
+            app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button_fake_undo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha=".5"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:text="@string/button_undo"
+            app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.67"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/button_undo"
@@ -64,6 +92,7 @@
             app:layout_constraintHorizontal_bias="0.67"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
