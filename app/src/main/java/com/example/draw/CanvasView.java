@@ -79,19 +79,6 @@ public class CanvasView extends View implements View.OnTouchListener
         Log.d("Draws","0");
     }
 
-    private void addDrawing(final Drawing d)
-    {
-        drawings.add(d);
-        current = new Drawing();
-        ++N;
-
-        checkUndoButton();
-
-        invalidate();
-
-        Log.d("Drawings",String.valueOf(N));
-    }
-
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP)
@@ -106,17 +93,17 @@ public class CanvasView extends View implements View.OnTouchListener
 ////            Log.d("Drawings",String.valueOf(drawings.size()));
 //            Log.d("Drawings",String.valueOf(N));
 
-            addDrawing(current);
+//            addDrawing(current);
 
+            drawingsAdd(current);
+            current = new Drawing();
+
+            invalidate();
             return true;
         }
 
 //        if (redo != null) redo = null;
-        if (!redoSt.isEmpty())
-        {
-            redoSt.clear();
-            checkRedoButton();
-        }
+        if (!redoSt.isEmpty()) redoStClear();
 
         CPoint p = new CPoint();
         p.x = event.getX();
@@ -128,18 +115,12 @@ public class CanvasView extends View implements View.OnTouchListener
 
     public boolean clearDrawings()
     {
-//        if (drawings.isEmpty()) return false;
         if (N == 0 && redoSt.isEmpty()) return false;
 
         current = new Drawing();
-        drawings.clear();
-        N = 0;
 
-//        redo = null;
-        redoSt.clear();
-
-        checkUndoButton();
-        checkRedoButton();
+        drawingsClear();
+        redoStClear();
 
         invalidate();
         return true;
@@ -147,17 +128,11 @@ public class CanvasView extends View implements View.OnTouchListener
 
     public boolean undoDrawings()
     {
-//        if (drawings.isEmpty()) return false;
         if (N == 0) return false;
 
         current = new Drawing();
 
-//        redo = drawings.get(--N);
-        redoSt.push(drawings.get(--N));
-        checkRedoButton();
-
-        drawings.remove(N);
-        checkUndoButton();
+        redoStAdd(drawingsPop());
 
         invalidate();
         return true;
@@ -176,20 +151,74 @@ public class CanvasView extends View implements View.OnTouchListener
     {
         if (redoSt.isEmpty()) return false;
 
-        addDrawing(redoSt.pop());
-        checkRedoButton();
+        drawingsAdd(redoStPop());
 
+        invalidate();
         return true;
     }
 
-    private void checkUndoButton()
+    private void drawingsAdd(final Drawing d)
     {
-        buttonUndo.setEnabled(!drawings.isEmpty());
+        drawings.add(d);
+        ++N;
+
+        buttonUndo.setEnabled(true);
+
+        Log.d("Drawings",String.valueOf(N));
     }
 
-    private void checkRedoButton()
+    private Drawing drawingsPop()
     {
-        buttonRedo.setEnabled(!redoSt.isEmpty());
+        if (N == 0) return null;
+
+        final Drawing d = drawings.get(--N);
+        drawings.remove(N);
+
+        if (N == 0) buttonUndo.setEnabled(false);
+
+        Log.d("Drawings",String.valueOf(N));
+
+        return d;
+    }
+
+    private void drawingsClear()
+    {
+        drawings.clear();
+
+        buttonUndo.setEnabled(false);
+
+        Log.d("Drawings",String.valueOf(N = 0));
+    }
+
+    private void redoStAdd(final Drawing d)
+    {
+        redoSt.push(d);
+
+        buttonRedo.setEnabled(true);
+
+        Log.d("Redo",String.valueOf(redoSt.size()));
+    }
+
+    private Drawing redoStPop()
+    {
+        if (redoSt.isEmpty()) return null;
+
+        final Drawing d = redoSt.pop();
+
+        if (redoSt.isEmpty()) buttonRedo.setEnabled(false);
+
+        Log.d("Redo",String.valueOf(redoSt.size()));
+
+        return d;
+    }
+
+    private void redoStClear()
+    {
+        redoSt.clear();
+
+        buttonRedo.setEnabled(false);
+
+        Log.d("Redo",String.valueOf(0));
     }
 
 
