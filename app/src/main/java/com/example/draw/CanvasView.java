@@ -32,10 +32,8 @@ public class CanvasView extends View implements View.OnTouchListener
 
 
     @SuppressLint("ClickableViewAccessibility")
-    public CanvasView(Context context)
+    private void init()
     {
-        super(context);
-
         setFocusable(true);
         setFocusableInTouchMode(true);
         this.setOnTouchListener(this);
@@ -47,20 +45,38 @@ public class CanvasView extends View implements View.OnTouchListener
         current = new Drawing();
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    public CanvasView(Context context)
+    {
+        super(context);
+
+//        setFocusable(true);
+//        setFocusableInTouchMode(true);
+//        this.setOnTouchListener(this);
+//        paintOld.setColor(Color.RED);
+//        paintOld.setStrokeWidth(paintSize);
+//        paint.setColor(Color.BLACK);
+//        paint.setStrokeWidth(paintSize);
+//
+//        current = new Drawing();
+
+        init();
+    }
+
     public CanvasView(Context context, Button bu, Button br)
     {
         super(context);
 
-        setFocusable(true);
-        setFocusableInTouchMode(true);
-        this.setOnTouchListener(this);
-        paintOld.setColor(Color.RED);
-        paintOld.setStrokeWidth(paintSize);
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(paintSize);
+//        setFocusable(true);
+//        setFocusableInTouchMode(true);
+//        this.setOnTouchListener(this);
+//        paintOld.setColor(Color.RED);
+//        paintOld.setStrokeWidth(paintSize);
+//        paint.setColor(Color.BLACK);
+//        paint.setStrokeWidth(paintSize);
+//
+//        current = new Drawing();
 
-        current = new Drawing();
+        init();
 
         buttonUndo = bu;
         buttonRedo = br;
@@ -73,8 +89,14 @@ public class CanvasView extends View implements View.OnTouchListener
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
 
+        
+
         current.draw(canvas,paintOld);
         for (Drawing d : drawings) d.draw(canvas,paint);
+//        current.drawTest(canvas,paintOld);
+//        for (Drawing d : drawings) d.drawTest(canvas,paint);
+
+
 
         Log.d("Draws","0");
     }
@@ -244,6 +266,28 @@ public class CanvasView extends View implements View.OnTouchListener
 
             for (int i = 1; i < n; i++)
                 canvas.drawLine(points.get(i-1).x,points.get(i-1).y,points.get(i).x,points.get(i).y,paint);
+        }
+
+        protected void drawTest(@NonNull Canvas canvas, Paint paint)
+        {
+            final int n = points.size();
+            if (n == 1)
+            {
+                canvas.drawCircle(points.get(0).x,points.get(0).y,10.f,paint);
+                return;
+            }
+
+            for (int i = 1; i < n; i++)
+            {
+                final CPoint middle = new CPoint();
+                middle.x = points.get(i-1).x+(points.get(i).x-points.get(i-1).x)/2;
+                middle.y = points.get(i-1).y+(points.get(i).y-points.get(i-1).y)/2;
+                canvas.drawLine(points.get(i-1).x,points.get(i-1).y,middle.x,middle.y,paint);
+                canvas.drawLine(middle.x,middle.y,points.get(i).x,points.get(i).y,paint);
+
+
+//                canvas.draw
+            }
         }
 
         protected int size() { return points.size(); }
