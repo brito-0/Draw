@@ -1,7 +1,6 @@
 package com.example.draw;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Confirm",(dialog,which) -> cView.clearDrawings())
                         .setNegativeButton("cancel",(dialog,which) -> {})
                         .show());
+
+        binding.switchErase.setOnCheckedChangeListener(
+                (buttonView, isChecked) ->
+                        cView.setEraseModeValue(isChecked));
     }
 
     @Override

@@ -6,4 +6,9 @@
     </style>
 
     <style name="Theme.Draw" parent="Base.Theme.Draw" />
+
+    <style name="EraseSwitch" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/red</item>
+        <item name="android:colorForeground">@color/white</item>
+    </style>
 </resources>

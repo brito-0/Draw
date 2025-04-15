@@ -18,29 +18,30 @@ import java.util.Stack;
 
 public class CanvasView extends View implements View.OnTouchListener
 {
-    private final Paint paintOld = new Paint(), paint = new Paint();
+    private static final Paint paint = new Paint();
 
     private final List<Drawing> drawings = new ArrayList<>();
     private Drawing current;// , redo = null;
     private final Stack<Drawing> redoSt = new Stack<>();
     private int N = 0;
 
-    // 15.f
     private static final float paintSize = 16.f;
 
     private Button buttonUndo, buttonRedo;
 
+    private boolean eraseMode = false;
+
 
     @SuppressLint("ClickableViewAccessibility")
-    private void init()
+    private void initCanvas()
     {
         setFocusable(true);
         setFocusableInTouchMode(true);
         this.setOnTouchListener(this);
-        paintOld.setColor(Color.RED);
-        paintOld.setStrokeWidth(paintSize);
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(paintSize);
+//        paintOld.setColor(Color.RED);
+//        paintOld.setStrokeWidth(paintSize);
+//        paint.setColor(Color.BLACK);
+//        paint.setStrokeWidth(paintSize);
 
         current = new Drawing();
     }
@@ -49,34 +50,14 @@ public class CanvasView extends View implements View.OnTouchListener
     {
         super(context);
 
-//        setFocusable(true);
-//        setFocusableInTouchMode(true);
-//        this.setOnTouchListener(this);
-//        paintOld.setColor(Color.RED);
-//        paintOld.setStrokeWidth(paintSize);
-//        paint.setColor(Color.BLACK);
-//        paint.setStrokeWidth(paintSize);
-//
-//        current = new Drawing();
-
-        init();
+        initCanvas();
     }
 
     public CanvasView(Context context, Button bu, Button br)
     {
         super(context);
 
-//        setFocusable(true);
-//        setFocusableInTouchMode(true);
-//        this.setOnTouchListener(this);
-//        paintOld.setColor(Color.RED);
-//        paintOld.setStrokeWidth(paintSize);
-//        paint.setColor(Color.BLACK);
-//        paint.setStrokeWidth(paintSize);
-//
-//        current = new Drawing();
-
-        init();
+        initCanvas();
 
         buttonUndo = bu;
         buttonRedo = br;
@@ -89,14 +70,11 @@ public class CanvasView extends View implements View.OnTouchListener
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
 
-        
+        for (Drawing d : drawings) d.draw(canvas);
+        current.draw(canvas);
 
-        current.draw(canvas,paintOld);
-        for (Drawing d : drawings) d.draw(canvas,paint);
-//        current.drawTest(canvas,paintOld);
 //        for (Drawing d : drawings) d.drawTest(canvas,paint);
-
-
+//        current.drawTest(canvas,paintOld);
 
         Log.d("Draws","0");
     }
@@ -105,20 +83,11 @@ public class CanvasView extends View implements View.OnTouchListener
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP)
         {
-////            if (current.size() > 1) drawings.add(current);
-//            drawings.add(current);
-//            current = new Drawing();
-//            ++N;
-//
-//            invalidate();
-//
-////            Log.d("Drawings",String.valueOf(drawings.size()));
-//            Log.d("Drawings",String.valueOf(N));
-
-//            addDrawing(current);
+            if (!eraseMode) current.pType = Drawing.PaintType.NORMAL;
 
             drawingsAdd(current);
-            current = new Drawing();
+//            current = new Drawing();
+            resetCurrent();
 
             invalidate();
             return true;
@@ -139,7 +108,8 @@ public class CanvasView extends View implements View.OnTouchListener
     {
         if (N == 0 && redoSt.isEmpty()) return false;
 
-        current = new Drawing();
+//        current = new Drawing();
+        resetCurrent();
 
         drawingsClear();
         redoStClear();
@@ -152,7 +122,8 @@ public class CanvasView extends View implements View.OnTouchListener
     {
         if (N == 0) return false;
 
-        current = new Drawing();
+//        current = new Drawing();
+        resetCurrent();
 
         redoStAdd(drawingsPop());
 
@@ -177,6 +148,12 @@ public class CanvasView extends View implements View.OnTouchListener
 
         invalidate();
         return true;
+    }
+
+    public void setEraseModeValue(boolean value)
+    {
+        eraseMode = value;
+        resetCurrent();
     }
 
     private void drawingsAdd(final Drawing d)
@@ -243,6 +220,29 @@ public class CanvasView extends View implements View.OnTouchListener
         Log.d("Redo",String.valueOf(0));
     }
 
+    private void resetCurrent()
+    {
+        current = new Drawing();
+        if (eraseMode) current.pType = Drawing.PaintType.ERASE;
+    }
+
+    private static void setPaintNew()
+    {
+        paint.setColor(Color.RED);
+        paint.setStrokeWidth(paintSize);
+    }
+    private static void setPaintNormal()
+    {
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(paintSize);
+    }
+    private static void setPaintErase()
+    {
+        paint.setColor(Color.WHITE);
+        paint.setStrokeWidth(paintSize*2);
+    }
+
+
 
     private static class CPoint
     {
@@ -251,12 +251,22 @@ public class CanvasView extends View implements View.OnTouchListener
 
     private static class Drawing
     {
+        enum PaintType
+        {
+            NEW,
+            NORMAL,
+            ERASE
+        }
+        private PaintType pType = PaintType.NEW;
+
         private final List<CPoint> points = new ArrayList<>();
 
         protected void addPoint(final CPoint point) { points.add(point); }
 
-        protected void draw(@NonNull Canvas canvas, Paint paint)
+        protected void draw(@NonNull Canvas canvas)
         {
+            changePaintColour();
+
             final int n = points.size();
             if (n == 1)
             {
@@ -268,28 +278,44 @@ public class CanvasView extends View implements View.OnTouchListener
                 canvas.drawLine(points.get(i-1).x,points.get(i-1).y,points.get(i).x,points.get(i).y,paint);
         }
 
-        protected void drawTest(@NonNull Canvas canvas, Paint paint)
-        {
-            final int n = points.size();
-            if (n == 1)
-            {
-                canvas.drawCircle(points.get(0).x,points.get(0).y,10.f,paint);
-                return;
-            }
-
-            for (int i = 1; i < n; i++)
-            {
-                final CPoint middle = new CPoint();
-                middle.x = points.get(i-1).x+(points.get(i).x-points.get(i-1).x)/2;
-                middle.y = points.get(i-1).y+(points.get(i).y-points.get(i-1).y)/2;
-                canvas.drawLine(points.get(i-1).x,points.get(i-1).y,middle.x,middle.y,paint);
-                canvas.drawLine(middle.x,middle.y,points.get(i).x,points.get(i).y,paint);
-
-
-//                canvas.draw
-            }
-        }
+//        protected void drawTest(@NonNull Canvas canvas, Paint paint)
+//        {
+//            final int n = points.size();
+//            if (n == 1)
+//            {
+//                canvas.drawCircle(points.get(0).x,points.get(0).y,10.f,paint);
+//                return;
+//            }
+//
+//            for (int i = 1; i < n; i++)
+//            {
+//                final CPoint middle = new CPoint();
+//                middle.x = points.get(i-1).x+(points.get(i).x-points.get(i-1).x)/2;
+//                middle.y = points.get(i-1).y+(points.get(i).y-points.get(i-1).y)/2;
+//                canvas.drawLine(points.get(i-1).x,points.get(i-1).y,middle.x,middle.y,paint);
+//                canvas.drawLine(middle.x,middle.y,points.get(i).x,points.get(i).y,paint);
+//
+//
+////                canvas.draw
+//            }
+//        }
 
         protected int size() { return points.size(); }
+
+        private void changePaintColour()
+        {
+            switch (pType)
+            {
+                case NEW:
+                    setPaintNew();
+                    break;
+                case NORMAL:
+                    setPaintNormal();
+                    break;
+                case ERASE:
+                    setPaintErase();
+                    break;
+            }
+        }
     }
 }

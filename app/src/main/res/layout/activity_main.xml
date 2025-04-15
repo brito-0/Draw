@@ -51,7 +51,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.95"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15" />
 
         <Button
             android:id="@+id/button_redo"
@@ -64,7 +65,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.95"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15" />
 
         <Button
             android:id="@+id/button_fake_undo"
@@ -78,7 +80,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.67"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15" />
 
         <Button
             android:id="@+id/button_undo"
@@ -91,7 +94,42 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.67"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15" />
+
+        <Button
+            android:id="@+id/button_erase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:text=""
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.81"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.85"
+            tools:visibility="gone" />
+
+        <Switch
+            android:id="@+id/switch_erase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/editbox_background"
+            android:backgroundTint="@color/purple"
+            android:text="@string/switch_erase"
+            android:textColor="@color/white"
+            android:theme="@style/EraseSwitch"
+            android:checked="false"
+            app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.81"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.85"
+            tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
