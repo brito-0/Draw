@@ -4,4 +4,11 @@
     <color name="white">#FFFFFFFF</color>
     <color name="purple">#6750a4</color>
     <color name="red">#ff0000</color>
+
+    <color name="paint_black">#FF000000</color>
+    <color name="paint_blue">#0033D9</color>
+    <color name="paint_red">#CE0101</color>
+    <color name="paint_yellow">#FFEB3B</color>
+    <color name="paint_orange">#DE8200</color>
+    <color name="paint_green">#28A900</color>
 </resources>

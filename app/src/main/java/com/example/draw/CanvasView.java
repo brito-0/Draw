@@ -19,6 +19,7 @@ import java.util.Stack;
 public class CanvasView extends View implements View.OnTouchListener
 {
     private static final Paint paint = new Paint();
+    private static int curr_color;
 
     private final List<Drawing> drawings = new ArrayList<>();
     private Drawing current;// , redo = null;
@@ -39,6 +40,8 @@ public class CanvasView extends View implements View.OnTouchListener
         setFocusableInTouchMode(true);
         this.setOnTouchListener(this);
         paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        curr_color = Color.BLACK;
 
         current = new Drawing();
     }
@@ -217,20 +220,30 @@ public class CanvasView extends View implements View.OnTouchListener
         if (eraseMode) current.pType = Drawing.PaintType.ERASE;
     }
 
-    private static void setPaintNew()
+    public void setPaintColor(final int color)
     {
-        paint.setColor(Color.RED);
-        paint.setStrokeWidth(paintSize);
+//        curr_color = color;
+//        current.pColor = color;
+        curr_color = current.pColor = color;
     }
-    private static void setPaintNormal()
+
+//    private static void setPaintNew()
+//    {
+//        paint.setColor(Color.RED);
+//        paint.setStrokeWidth(paintSize);
+//    }
+    private static void setPaintNormal(final int color)
     {
-        paint.setColor(Color.BLACK);
+//        paint.setColor(Color.BLACK);
+        paint.setColor(color);
         paint.setStrokeWidth(paintSize);
+        paint.setAlpha(255);
     }
     private static void setPaintErase()
     {
         paint.setColor(Color.WHITE);
         paint.setStrokeWidth(paintSize*2);
+        paint.setAlpha(255);
     }
 
 
@@ -244,11 +257,14 @@ public class CanvasView extends View implements View.OnTouchListener
     {
         enum PaintType
         {
-            NEW,
+//            NEW,
             NORMAL,
             ERASE
         }
-        private PaintType pType = PaintType.NEW;
+//        private PaintType pType = PaintType.NEW;
+        private PaintType pType = PaintType.NORMAL;
+
+        private int pColor = curr_color;
 
         private final List<CPoint> points = new ArrayList<>();
 
@@ -275,11 +291,11 @@ public class CanvasView extends View implements View.OnTouchListener
         {
             switch (pType)
             {
-                case NEW:
-                    setPaintNew();
-                    break;
+//                case NEW:
+//                    setPaintNew();
+//                    break;
                 case NORMAL:
-                    setPaintNormal();
+                    setPaintNormal(pColor);
                     break;
                 case ERASE:
                     setPaintErase();

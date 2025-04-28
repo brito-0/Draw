@@ -1,7 +1,11 @@
 package com.example.draw;
 
 import android.app.AlertDialog;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Display;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -21,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     private CoordinatorLayout cLayout;
 
+    private ColorRotation colorRot;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         cLayout.addView(cView);
 
+        colorRot = new ColorRotation(this);
 
 
 //        setSupportActionBar(binding.toolbar);
@@ -71,6 +78,43 @@ public class MainActivity extends AppCompatActivity {
         binding.switchErase.setOnCheckedChangeListener(
                 (buttonView, isChecked) ->
                         cView.setEraseModeValue(isChecked));
+
+        binding.buttonColour.setOnClickListener(new DoubleClickListener() {
+            @Override
+            public void onSingleClick()
+            {
+                ColorRotation.CRColor newColor = colorRot.incrementColor();
+                cView.setPaintColor(newColor.getColourNum());
+                binding.buttonColour.setBackgroundTintList(ColorStateList.valueOf(newColor.getColourNum()));
+                Toast.makeText(getApplicationContext(),newColor.getName(),Toast.LENGTH_SHORT).show();
+
+                Log.d("TEST_DOUBLE_CLICK","Name: "+newColor.getName()+" | "+"Int: "+newColor.getColourNum());
+//                Log.d("ColourButton","Single Click");
+            }
+
+            @Override
+            public void onDoubleClick()
+            {
+                ColorRotation.CRColor newColor = colorRot.resetColor();
+                cView.setPaintColor(newColor.getColourNum());
+                binding.buttonColour.setBackgroundTintList(ColorStateList.valueOf(newColor.getColourNum()));
+                Toast.makeText(getApplicationContext(),newColor.getName(),Toast.LENGTH_SHORT).show();
+//                Log.d("ColourButton","Double Click");
+            }
+        });
+
+
+
+//      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//        Display display = getWindowManager().getDefaultDisplay();
+//        Display.Mode[] supported = display.getSupportedModes();
+//        for (final Display.Mode m : supported)
+//            Log.d("DisplayInfo","supported mode: "+m.getPhysicalWidth()+"x"+m.getPhysicalHeight()+", "+m.getRefreshRate()+"Hz");
+//      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
 //    @Override

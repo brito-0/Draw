@@ -103,10 +103,10 @@
             android:layout_height="wrap_content"
             android:background="@android:drawable/editbox_background"
             android:backgroundTint="@color/purple"
+            android:checked="false"
             android:text="@string/switch_erase"
             android:textColor="@color/white"
             android:theme="@style/EraseSwitch"
-            android:checked="false"
             app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.81"
@@ -114,6 +114,36 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.85"
             tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/button_colour_border"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/button_colour"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/circle_button"
+                    android:backgroundTint="@color/black"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
