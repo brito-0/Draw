@@ -12,7 +12,7 @@ public class ColorRotation
     private final List<CRColor> cRot;
 
     final int N;
-    int count;
+    int i;
 
     ColorRotation(Context c)
     {
@@ -25,41 +25,37 @@ public class ColorRotation
         cRot.add(new CRColor("green",ContextCompat.getColor(c,R.color.paint_green)));
 
         N = cRot.size();
-        count = 0;
+        i = 0;
     }
 
-
-    // single click moves to the next colour
-    // double click goes to black
-
-    public CRColor getCurrent() { return cRot.get(count); }
+    public CRColor getCurrent() { return cRot.get(i); }
 
     public CRColor incrementColor()
     {
-        if (++count == N) count = 0;
-        return cRot.get(count);
+        if (++i == N) i = 0;
+        return cRot.get(i);
     }
 
     public CRColor resetColor()
     {
-        count = 0;
-        return cRot.get(count);
+        i = 0;
+        return cRot.get(i);
     }
 
 
     public static class CRColor
     {
         private final String name;
-        private final int colourNum;
+        private final int colorNum;
 
-        CRColor(final String _name, final int _colourNum)
+        CRColor(final String _name, final int _colorNum)
         {
             this.name = _name;
-            this.colourNum = _colourNum;
+            this.colorNum = _colorNum;
         }
 
         public String getName() { return name; }
 
-        public int getColourNum() { return colourNum; }
+        public int getColorNum() { return colorNum; }
     }
 }

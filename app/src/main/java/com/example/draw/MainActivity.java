@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -79,27 +78,27 @@ public class MainActivity extends AppCompatActivity {
                 (buttonView, isChecked) ->
                         cView.setEraseModeValue(isChecked));
 
-        binding.buttonColour.setOnClickListener(new DoubleClickListener() {
+        binding.buttonColor.setOnClickListener(new DoubleClickListener() {
             @Override
             public void onSingleClick()
             {
                 ColorRotation.CRColor newColor = colorRot.incrementColor();
-                cView.setPaintColor(newColor.getColourNum());
-                binding.buttonColour.setBackgroundTintList(ColorStateList.valueOf(newColor.getColourNum()));
-                Toast.makeText(getApplicationContext(),newColor.getName(),Toast.LENGTH_SHORT).show();
+                cView.setPaintColor(newColor.getColorNum());
+                binding.buttonColor.setBackgroundTintList(ColorStateList.valueOf(newColor.getColorNum()));
 
-                Log.d("TEST_DOUBLE_CLICK","Name: "+newColor.getName()+" | "+"Int: "+newColor.getColourNum());
-//                Log.d("ColourButton","Single Click");
+                Toast.makeText(getApplicationContext(),newColor.getName(),Toast.LENGTH_SHORT).show();
+                Log.d("TEST_COLOR_CHANGE","Single Click -> "+"Name: "+newColor.getName()+" | "+"Int: "+newColor.getColorNum());
             }
 
             @Override
             public void onDoubleClick()
             {
                 ColorRotation.CRColor newColor = colorRot.resetColor();
-                cView.setPaintColor(newColor.getColourNum());
-                binding.buttonColour.setBackgroundTintList(ColorStateList.valueOf(newColor.getColourNum()));
+                cView.setPaintColor(newColor.getColorNum());
+                binding.buttonColor.setBackgroundTintList(ColorStateList.valueOf(newColor.getColorNum()));
+
                 Toast.makeText(getApplicationContext(),newColor.getName(),Toast.LENGTH_SHORT).show();
-//                Log.d("ColourButton","Double Click");
+                Log.d("TEST_COLOR_CHANGE","Double Click -> "+"Name: "+newColor.getName()+" | "+"Int: "+newColor.getColorNum());
             }
         });
 

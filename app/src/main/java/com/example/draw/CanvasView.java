@@ -272,7 +272,7 @@ public class CanvasView extends View implements View.OnTouchListener
 
         protected void draw(@NonNull Canvas canvas)
         {
-            changePaintColour();
+            changePaintColor();
 
             final int n = points.size();
             if (n == 1)
@@ -287,7 +287,7 @@ public class CanvasView extends View implements View.OnTouchListener
 
         protected int size() { return points.size(); }
 
-        private void changePaintColour()
+        private void changePaintColor()
         {
             switch (pType)
             {
