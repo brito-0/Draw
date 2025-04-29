@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 //import androidx.navigation.NavController;
 //import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
+//import androidx.navigation.ui.AppBarConfiguration;
 //import androidx.navigation.ui.NavigationUI;
 import com.example.draw.databinding.ActivityMainBinding;
 //import android.view.Menu;
@@ -19,7 +19,7 @@ import com.example.draw.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
+//    private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
     private CoordinatorLayout cLayout;

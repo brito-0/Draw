@@ -6,9 +6,9 @@
     <color name="red">#ff0000</color>
 
     <color name="paint_black">#FF000000</color>
-    <color name="paint_blue">#0033D9</color>
-    <color name="paint_red">#CE0101</color>
+    <color name="paint_blue">#0038FF</color>
+    <color name="paint_red">#E70000</color>
     <color name="paint_yellow">#FFEB3B</color>
-    <color name="paint_orange">#DE8200</color>
-    <color name="paint_green">#28A900</color>
+    <color name="paint_orange">#FF9A0E</color>
+    <color name="paint_green">#32CC00</color>
 </resources>
