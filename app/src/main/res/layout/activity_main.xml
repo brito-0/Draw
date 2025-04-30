@@ -49,7 +49,7 @@
             android:text="@string/button_redo"
             app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintHorizontal_bias="0.88"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.15" />
@@ -63,7 +63,7 @@
             android:text="@string/button_redo"
             app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintHorizontal_bias="0.88"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.15" />
@@ -78,7 +78,7 @@
             android:text="@string/button_undo"
             app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.67"
+            app:layout_constraintHorizontal_bias="0.6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.15" />
@@ -92,7 +92,7 @@
             android:text="@string/button_undo"
             app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.67"
+            app:layout_constraintHorizontal_bias="0.6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.15" />
@@ -109,11 +109,26 @@
             android:theme="@style/EraseSwitch"
             app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.81"
+            app:layout_constraintHorizontal_bias="0.74"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.85"
             tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml" />
+
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:drawable/ic_menu_save"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.97"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.9"
+            tools:backgroundTint="#FFFFFF" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/button_color_border"
@@ -123,7 +138,7 @@
             app:cardCornerRadius="20dp"
             app:layout_constraintBottom_toTopOf="@+id/a_canvas_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintHorizontal_bias="0.35"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -136,11 +151,11 @@
                     android:id="@+id/button_color"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
+                    android:layout_centerInParent="true"
                     android:background="@drawable/circle_button"
                     android:backgroundTint="@color/black"
                     android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:layout_centerInParent="true" />
+                    android:minHeight="0dp" />
             </RelativeLayout>
 
         </com.google.android.material.card.MaterialCardView>
