@@ -1,7 +1,9 @@
 package com.example.draw;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -10,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,6 +20,7 @@ import android.Manifest;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
@@ -27,9 +31,7 @@ import androidx.core.content.ContextCompat;
 import com.example.draw.databinding.ActivityMainBinding;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 //import android.view.Menu;
@@ -46,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private ColorRotation colorRot;
 
     private CanvasView cView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         cLayout.addView(cView);
 
         colorRot = new ColorRotation(this);
+
 
 
 //        setSupportActionBar(binding.toolbar);
@@ -152,30 +154,49 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isWritePermissionGranted()
     {
-        return ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            return Environment.isExternalStorageManager();
+        else
+            return ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestWritePermission()
     {
-        String[] permissions;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-            permissions = new String[] { Manifest.permission.MANAGE_EXTERNAL_STORAGE };
+        {
+            try {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                intent.addCategory("android.intent.category.DEFAULT");
+                intent.setData(Uri.parse(String.format("package:%s", getApplicationContext().getPackageName())));
+//                startActivityForResult(intent,2296);
+                startActivityIfNeeded(intent,2296);
+            }
+            catch (Exception e)
+            {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+//                startActivityForResult(intent,2296);
+                startActivityIfNeeded(intent,2296);
+            }
+        }
         else
-            permissions = new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE };
+            requestPermissionLauncher.launch(new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE });
+    }
 
-        requestPermissionLauncher.launch(permissions);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 2296)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                if (Environment.isExternalStorageManager()) saveDrawing();
+                else Toast.makeText(getApplicationContext(),"permission denied",Toast.LENGTH_SHORT).show();
     }
 
     private final ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),permissions ->
             {
-                boolean writePermissionGranted;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-                    writePermissionGranted = Boolean.TRUE.equals(permissions.getOrDefault(Manifest.permission.MANAGE_EXTERNAL_STORAGE,false));
-                else
-                    writePermissionGranted = Boolean.TRUE.equals(permissions.getOrDefault(Manifest.permission.WRITE_EXTERNAL_STORAGE,false));
-
+                boolean writePermissionGranted = Boolean.TRUE.equals(permissions.getOrDefault(Manifest.permission.WRITE_EXTERNAL_STORAGE, false));
                 if (writePermissionGranted) saveDrawing();
                 else Toast.makeText(getApplicationContext(),"permission denied",Toast.LENGTH_SHORT).show();
             });
@@ -184,38 +205,22 @@ public class MainActivity extends AppCompatActivity {
     {
         Bitmap saveBitmap = cView.getBitmap();
 
-//                            String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-//                            File dir = new File(root);
-//                            dir.mkdirs();
-////                            SimpleDateFormat sdf = new SimpleDateFormat("'yyyy-MM-dd'|'HH-mm-ss'");
-////                            String fileName = "Drawing-"+sdf.format(new Date())+".jpg";
-//                            String fileName = "Drawing-"+".jpg";
-//                            File saveFile = new File(dir,fileName);
-
-        String fileName = "Drawing--p"+".jpg";
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss");
+        String fileName = "Drawing-"+sdf.format(new Date())+".jpg";
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DISPLAY_NAME,fileName);
         values.put(MediaStore.Images.Media.MIME_TYPE,"image/jpg");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-        {
-            values.put(MediaStore.MediaColumns.RELATIVE_PATH,"DCIM/");
-            values.put(MediaStore.MediaColumns.IS_PENDING,1);
-        }
-        else
-        {
-            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-            File saveFile = new File(dir,fileName);
-            values.put(MediaStore.MediaColumns.DATA,saveFile.getAbsolutePath());
-        }
+
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+        File saveFile = new File(dir,fileName);
+        values.put(MediaStore.MediaColumns.DATA,saveFile.getAbsolutePath());
 
         Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
+        assert uri != null;
 
         try (OutputStream out = getContentResolver().openOutputStream(uri))
         {
-////                                File saveFile = new File(Environment.getExternalStorageDirectory().toString()+"/"+sdf.format(new Date())+".jpg");
-//                                FileOutputStream out = new FileOutputStream(saveFile);
-//                                saveBitmap.compress(Bitmap.CompressFormat.JPEG,100,out);
-
+            assert out != null;
             saveBitmap.compress(Bitmap.CompressFormat.JPEG,100,out);
 
             saveBitmap.recycle();
