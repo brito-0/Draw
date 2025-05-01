@@ -2,6 +2,7 @@ package com.example.draw;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -148,6 +149,17 @@ public class CanvasView extends View implements View.OnTouchListener
     {
         eraseMode = value;
         resetCurrent();
+    }
+
+    public Bitmap getBitmap()
+    {
+        Bitmap bitmap = Bitmap.createBitmap(this.getWidth(),this.getHeight(),Bitmap.Config.ARGB_8888);
+        Canvas saveCanvas = new Canvas(bitmap);
+        saveCanvas.drawColor(Color.WHITE);
+        saveCanvas.drawBitmap(bitmap,0,0,null);
+        this.draw(saveCanvas);
+
+        return bitmap;
     }
 
     private void drawingsAdd(final Drawing d)
