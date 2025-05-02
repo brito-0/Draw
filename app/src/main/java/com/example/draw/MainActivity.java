@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 (buttonView, isChecked) ->
                         cView.setEraseModeValue(isChecked));
 
-        binding.buttonColor.setOnClickListener(new DoubleClickListener() {
+        binding.buttonColor.setOnClickListener(new MultipleClickListener() {
             @Override
             public void onSingleClick()
             {
@@ -117,13 +117,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDoubleClick()
             {
+                colorRot.reverseOrder();
+
+                Toast.makeText(getApplicationContext(),"Color Order Reversed",Toast.LENGTH_SHORT).show();
+                Log.d("TEST_COLOR_CHANGE","Double Click -> "+"Order reversed");
+            }
+
+            @Override
+            public void onTripleClick()
+            {
                 ColorRotation.CRColor newColor = colorRot.resetColor();
                 cView.setPaintColor(newColor.getColorNum());
                 binding.buttonColor.setBackgroundTintList(ColorStateList.valueOf(newColor.getColorNum()));
 
                 Toast.makeText(getApplicationContext(),newColor.getName(),Toast.LENGTH_SHORT).show();
-                Log.d("TEST_COLOR_CHANGE","Double Click -> "+"Name: "+newColor.getName()+" | "+"Int: "+newColor.getColorNum());
+                Log.d("TEST_COLOR_CHANGE","Triple Click -> "+"Name: "+newColor.getName()+" | "+"Int: "+newColor.getColorNum());
             }
+        });
+
+        binding.buttonColor.setOnLongClickListener(v ->
+        {
+            Toast.makeText(getApplicationContext(),colorRot.getAllColors(),Toast.LENGTH_LONG).show();
+            return true;
         });
 
         binding.buttonSave.setOnClickListener(v ->
@@ -190,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 2296)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
                 if (Environment.isExternalStorageManager()) saveDrawing();
-                else Toast.makeText(getApplicationContext(),"permission denied",Toast.LENGTH_SHORT).show();
+                else Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
     }
 
     private final ActivityResultLauncher<String[]> requestPermissionLauncher =
@@ -198,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 boolean writePermissionGranted = Boolean.TRUE.equals(permissions.getOrDefault(Manifest.permission.WRITE_EXTERNAL_STORAGE, false));
                 if (writePermissionGranted) saveDrawing();
-                else Toast.makeText(getApplicationContext(),"permission denied",Toast.LENGTH_SHORT).show();
+                else Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
             });
 
     private void saveDrawing()
@@ -227,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
             out.flush();
             out.close();
 
-            Toast.makeText(getApplicationContext(),"drawing saved",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"Drawing Saved",Toast.LENGTH_SHORT).show();
         }
         catch (Exception e)
         {
