@@ -33,6 +33,8 @@ public class CanvasView extends View implements View.OnTouchListener
 
     private boolean eraseMode = false;
 
+    private Bitmap bmDrawing = null;
+
 
     @SuppressLint("ClickableViewAccessibility")
     private void initCanvas()
@@ -71,6 +73,7 @@ public class CanvasView extends View implements View.OnTouchListener
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
 
+        if (bmDrawing != null) canvas.drawBitmap(bmDrawing,0,0,null);
         for (Drawing d : drawings) d.draw(canvas);
         current.draw(canvas);
 
@@ -103,12 +106,14 @@ public class CanvasView extends View implements View.OnTouchListener
 
     public boolean clearDrawings()
     {
-        if (N == 0 && redoSt.isEmpty()) return false;
+        if (N == 0 && redoSt.isEmpty() && bmDrawing == null) return false;
 
         resetCurrent();
 
         drawingsClear();
         redoStClear();
+
+        bmDrawing = null;
 
         invalidate();
         return true;
@@ -160,6 +165,15 @@ public class CanvasView extends View implements View.OnTouchListener
         this.draw(saveCanvas);
 
         return bitmap;
+    }
+
+    public void loadDrawing(Bitmap bitmap)
+    {
+        clearDrawings();
+
+        bmDrawing = bitmap;
+
+        invalidate();
     }
 
     private void drawingsAdd(final Drawing d)

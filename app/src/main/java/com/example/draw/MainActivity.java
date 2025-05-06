@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import android.Manifest;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
@@ -31,6 +34,8 @@ import androidx.core.content.ContextCompat;
 import com.example.draw.databinding.ActivityMainBinding;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -49,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
     private CanvasView cView;
 
+    private Bitmap loadBitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        getWindow().setNavigationBarColor(Color.BLACK);
 
         cLayout = binding.aCanvasView;
 
@@ -92,10 +100,10 @@ public class MainActivity extends AppCompatActivity {
 
         binding.buttonClear.setOnClickListener(v ->
                 new AlertDialog.Builder(this)
-                        .setTitle("clear canvas?")
-                        .setMessage("this will clear everything on the canvas.\ryou also wont be able to use undo or redo afterwards.")
+                        .setTitle("Clear Canvas?")
+                        .setMessage("This will delete anything currently on the canvas.")
                         .setPositiveButton("Confirm",(dialog,which) -> cView.clearDrawings())
-                        .setNegativeButton("cancel",(dialog,which) -> {})
+                        .setNegativeButton("Cancel",(dialog,which) -> {})
                         .show());
 
         binding.switchErase.setOnCheckedChangeListener(
@@ -110,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 cView.setPaintColor(newColor.getColorNum());
                 binding.buttonColor.setBackgroundTintList(ColorStateList.valueOf(newColor.getColorNum()));
 
-                Toast.makeText(getApplicationContext(),newColor.getName(),Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this,newColor.getName(),Toast.LENGTH_SHORT).show();
                 Log.d("TEST_COLOR_CHANGE","Single Click -> "+"Name: "+newColor.getName()+" | "+"Int: "+newColor.getColorNum());
             }
 
@@ -119,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 colorRot.reverseOrder();
 
-                Toast.makeText(getApplicationContext(),"Color Order Reversed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"Color Order Reversed",Toast.LENGTH_SHORT).show();
                 Log.d("TEST_COLOR_CHANGE","Double Click -> "+"Order reversed");
             }
 
@@ -130,28 +138,80 @@ public class MainActivity extends AppCompatActivity {
                 cView.setPaintColor(newColor.getColorNum());
                 binding.buttonColor.setBackgroundTintList(ColorStateList.valueOf(newColor.getColorNum()));
 
-                Toast.makeText(getApplicationContext(),newColor.getName(),Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this,newColor.getName(),Toast.LENGTH_SHORT).show();
                 Log.d("TEST_COLOR_CHANGE","Triple Click -> "+"Name: "+newColor.getName()+" | "+"Int: "+newColor.getColorNum());
             }
         });
 
         binding.buttonColor.setOnLongClickListener(v ->
         {
-            Toast.makeText(getApplicationContext(),colorRot.getAllColors(),Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this,colorRot.getAllColors(),Toast.LENGTH_LONG).show();
             return true;
         });
 
-        binding.buttonSave.setOnClickListener(v ->
-                new AlertDialog.Builder(this)
-                        .setTitle("save drawing?")
+//        binding.buttonSave.setOnClickListener(v ->
+//                new AlertDialog.Builder(this)
+//                        .setTitle("Save Drawing?")
+//                        .setMessage("...")
+//                        .setPositiveButton("Confirm",(dialog,which) ->
+//                        {
+//                            if (isWritePermissionGranted()) saveDrawing();
+//                            else requestWritePermission();
+//                        })
+//                        .setNegativeButton("Cancel",(dialog,which) -> {})
+//                        .show());
+
+        binding.buttonSave.setOnClickListener(new MultipleClickListener() {
+            @Override
+            public void onSingleClick()
+            {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Save Drawing?")
                         .setMessage("...")
                         .setPositiveButton("Confirm",(dialog,which) ->
                         {
                             if (isWritePermissionGranted()) saveDrawing();
                             else requestWritePermission();
                         })
-                        .setNegativeButton("cancel",(dialog,which) -> {})
-                        .show());
+                        .setNegativeButton("Cancel",(dialog,which) -> {})
+                        .show();
+            }
+
+            @Override
+            public void onDoubleClick()
+            {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Load Drawing?")
+                        .setMessage("This will delete anything currently on the canvas.")
+                        .setPositiveButton("Confirm",(dialog,which) ->
+                        {
+                            if (isReadPermissionGranted())
+                            {
+                                try {
+                                    Intent intent = new Intent(Intent.ACTION_PICK);
+                                    intent.setType("image/*");
+                                    startActivityIfNeeded(intent,2297);
+                                }
+                                catch (Exception e)
+                                {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Intent.ACTION_PICK);
+                                    startActivityIfNeeded(intent,2297);
+                                }
+
+
+//                                if (loadBitmap != null) cView.loadDrawing(loadBitmap);
+//                                else Toast.makeText(MainActivity.this,"error selecting image",Toast.LENGTH_SHORT).show();
+                            }
+                            else requestReadPermission();
+                        })
+                        .setNegativeButton("Cancel",(dialog,which) -> {})
+                        .show();
+            }
+
+            @Override
+            public void onTripleClick() {}
+        });
 
 
 
@@ -175,45 +235,98 @@ public class MainActivity extends AppCompatActivity {
             return ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
+    private boolean isReadPermissionGranted()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            return Environment.isExternalStorageManager();
+        else
+            return ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private void requestReadWritePermissionR()
+    {
+        try {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+            intent.addCategory("android.intent.category.DEFAULT");
+            intent.setData(Uri.parse(String.format("package:%s", getApplicationContext().getPackageName())));
+//                startActivityForResult(intent,2296);
+            startActivityIfNeeded(intent,2296);
+        }
+        catch (Exception e)
+        {
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+//                startActivityForResult(intent,2296);
+            startActivityIfNeeded(intent,2296);
+        }
+    }
+
     private void requestWritePermission()
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-        {
-            try {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                intent.addCategory("android.intent.category.DEFAULT");
-                intent.setData(Uri.parse(String.format("package:%s", getApplicationContext().getPackageName())));
-//                startActivityForResult(intent,2296);
-                startActivityIfNeeded(intent,2296);
-            }
-            catch (Exception e)
-            {
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-//                startActivityForResult(intent,2296);
-                startActivityIfNeeded(intent,2296);
-            }
-        }
+            requestReadWritePermissionR();
         else
-            requestPermissionLauncher.launch(new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE });
+            requestWritePermissionLauncher.launch(new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE });
+    }
+
+    private void requestReadPermission()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            requestReadWritePermissionR();
+        else
+            requestReadPermissionLauncher.launch(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // read/write permission
         if (requestCode == 2296)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
                 if (Environment.isExternalStorageManager()) saveDrawing();
-                else Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
+                else Toast.makeText(MainActivity.this,"Permission Denied",Toast.LENGTH_SHORT).show();
+
+        // get image
+        if (requestCode == 2297)
+        {
+            try
+            {
+                if (data == null)
+                {
+                    Toast.makeText(MainActivity.this,"Error Selecting Drawing",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Uri imageUri = data.getData();
+                assert imageUri != null;
+                InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                loadBitmap = BitmapFactory.decodeStream(imageStream);
+
+                loadDrawing();
+            }
+            catch (FileNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
-    private final ActivityResultLauncher<String[]> requestPermissionLauncher =
+    private final ActivityResultLauncher<String[]> requestWritePermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),permissions ->
             {
                 boolean writePermissionGranted = Boolean.TRUE.equals(permissions.getOrDefault(Manifest.permission.WRITE_EXTERNAL_STORAGE, false));
                 if (writePermissionGranted) saveDrawing();
-                else Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
+                else Toast.makeText(MainActivity.this,"Permission Denied",Toast.LENGTH_SHORT).show();
+            });
+
+    private final ActivityResultLauncher<String[]> requestReadPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),permissions ->
+            {
+                boolean readPermissionGranted = Boolean.TRUE.equals(permissions.getOrDefault(Manifest.permission.READ_EXTERNAL_STORAGE, false));
+                if (readPermissionGranted) saveDrawing();
+                else Toast.makeText(MainActivity.this,"Permission Denied",Toast.LENGTH_SHORT).show();
             });
 
     private void saveDrawing()
@@ -242,12 +355,20 @@ public class MainActivity extends AppCompatActivity {
             out.flush();
             out.close();
 
-            Toast.makeText(getApplicationContext(),"Drawing Saved",Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this,"Drawing Saved",Toast.LENGTH_SHORT).show();
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
+    }
+
+    private void loadDrawing()
+    {
+        if (loadBitmap == null) return;
+
+        cView.loadDrawing(loadBitmap);
+        Toast.makeText(MainActivity.this,"Drawing Loaded",Toast.LENGTH_SHORT).show();
     }
 
 

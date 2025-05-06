@@ -32,20 +32,6 @@ public abstract class MultipleClickListener implements View.OnClickListener
     @Override
     public void onClick(View v)
     {
-//        if ((SystemClock.elapsedRealtime()-lastClick) < MULTIPLE_CLICK_INTERVAL)
-//        {
-//            isSingle = false;
-//            handler.removeCallbacks(runnable);
-//            onDoubleClick();
-//            return;
-//        }
-//
-//        isSingle = true;
-//        handler.postDelayed(runnable,MULTIPLE_CLICK_INTERVAL);
-//        lastClick = SystemClock.elapsedRealtime();
-
-
-
         if (counter == 1 && (SystemClock.elapsedRealtime()-lastClick) < MULTIPLE_CLICK_INTERVAL)
         {
             Log.d("CLICK_TEST","DOUBLE CLICK\t"+counter);
@@ -54,7 +40,7 @@ public abstract class MultipleClickListener implements View.OnClickListener
             isSingle = false;
             isDouble = true;
             handler.removeCallbacks(runnable);
-            handler.postDelayed(runnable, MULTIPLE_CLICK_INTERVAL);
+            handler.postDelayed(runnable,MULTIPLE_CLICK_INTERVAL);
             lastClick = SystemClock.elapsedRealtime();
             return;
         }
@@ -75,7 +61,7 @@ public abstract class MultipleClickListener implements View.OnClickListener
         ++counter;
         isSingle = true;
         isDouble = false;
-        handler.postDelayed(runnable, MULTIPLE_CLICK_INTERVAL);
+        handler.postDelayed(runnable,MULTIPLE_CLICK_INTERVAL);
         lastClick = SystemClock.elapsedRealtime();
     }
 

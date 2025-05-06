@@ -6,34 +6,32 @@ import androidx.core.content.ContextCompat;
 
 public class ColorRotation
 {
-    /**
-     * single click > moves to a different colour
-     * double click > changes the direction of movement
-     * triple click > moves to the first colour (black)
-     * hold         > show the colours in their original order
-     *
-     * add more colours and change the order
-     * */
+
+//    single click > moves to a different colour
+//    double click > changes the direction of movement
+//    triple click > moves to the first colour (black)
+//    hold         > show the colours in their original order
 
 
     private static CRColor[] cRot;
 
-    private static String allColors;
+    private static String allColors, allColorsReversed;
 
-    private boolean isReversed;
+    private static boolean isReversed;
 
-    private int i;
+    private static int i;
 
     ColorRotation(Context c)
     {
         cRot = new CRColor[]
                 {
                         new CRColor("Black",ContextCompat.getColor(c,R.color.paint_black)),
-                        new CRColor("Blue",ContextCompat.getColor(c,R.color.paint_blue)),
                         new CRColor("Red",ContextCompat.getColor(c,R.color.paint_red)),
-                        new CRColor("Yellow",ContextCompat.getColor(c,R.color.paint_yellow)),
                         new CRColor("Orange",ContextCompat.getColor(c,R.color.paint_orange)),
-                        new CRColor("Green",ContextCompat.getColor(c,R.color.paint_green))
+                        new CRColor("Yellow",ContextCompat.getColor(c,R.color.paint_yellow)),
+                        new CRColor("Green",ContextCompat.getColor(c,R.color.paint_green)),
+                        new CRColor("Blue",ContextCompat.getColor(c,R.color.paint_blue)),
+                        new CRColor("Pink",ContextCompat.getColor(c,R.color.paint_pink))
                 };
 
         setAllColors();
@@ -48,8 +46,6 @@ public class ColorRotation
 
     public CRColor incrementColor()
     {
-//        if (++i == cRot.length) i = 0;
-
         i += isReversed ? -1 : 1;
         if (i == cRot.length) i = 0;
         else if (i == -1) i = cRot.length-1;
@@ -65,15 +61,19 @@ public class ColorRotation
 
     public void reverseOrder() { isReversed = !isReversed; }
 
-    public String getAllColors() { return allColors; }
+    public String getAllColors() { return isReversed ? allColorsReversed : allColors; }
 
     private void setAllColors()
     {
-        final StringBuilder sb = new StringBuilder("|");
+        final StringBuilder ac = new StringBuilder("|"), acr = new StringBuilder("| <");
         for (final CRColor c : cRot)
-            sb.append(' ').append(c.getName()).append(" >");
-        sb.append("> |");
-        allColors = sb.toString();
+        {
+            ac.append(' ').append(c.getName()).append(" >");
+            acr.append("< ").append(c.getName()).append(' ');
+        }
+
+        allColors = ac.append("> |").toString();
+        allColorsReversed = acr.append("|").toString();
     }
 
 
