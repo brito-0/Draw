@@ -104,9 +104,9 @@ public class CanvasView extends View implements View.OnTouchListener
         return true;
     }
 
-    public boolean clearDrawings()
+    public void clearDrawings()
     {
-        if (N == 0 && redoSt.isEmpty() && bmDrawing == null) return false;
+        if (N == 0 && redoSt.isEmpty() && bmDrawing == null) return;
 
         resetCurrent();
 
@@ -116,19 +116,17 @@ public class CanvasView extends View implements View.OnTouchListener
         bmDrawing = null;
 
         invalidate();
-        return true;
     }
 
-    public boolean undoDrawings()
+    public void undoDrawings()
     {
-        if (N == 0) return false;
+        if (N == 0) return;
 
         resetCurrent();
 
         redoStAdd(drawingsPop());
 
         invalidate();
-        return true;
     }
 
 //    public boolean redoDrawings()
@@ -140,14 +138,13 @@ public class CanvasView extends View implements View.OnTouchListener
 //        return true;
 //    }
 
-    public boolean redoStDrawings()
+    public void redoStDrawings()
     {
-        if (redoSt.isEmpty()) return false;
+        if (redoSt.isEmpty()) return;
 
         drawingsAdd(redoStPop());
 
         invalidate();
-        return true;
     }
 
     public void setEraseModeValue(boolean value)
