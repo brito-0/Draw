@@ -10,7 +10,7 @@ public class ColorRotation
 //    single click > moves to a different colour
 //    double click > changes the direction of movement
 //    triple click > moves to the first colour (black)
-//    hold         > show the colours in their original order
+//    hold         > show the colours with arrows pointing in the current order
 
 
     private static CRColor[] cRot;
@@ -28,10 +28,12 @@ public class ColorRotation
                         new CRColor("Black",ContextCompat.getColor(c,R.color.paint_black)),
                         new CRColor("Red",ContextCompat.getColor(c,R.color.paint_red)),
                         new CRColor("Orange",ContextCompat.getColor(c,R.color.paint_orange)),
+                        new CRColor("Brown",ContextCompat.getColor(c,R.color.paint_brown)),
                         new CRColor("Yellow",ContextCompat.getColor(c,R.color.paint_yellow)),
                         new CRColor("Green",ContextCompat.getColor(c,R.color.paint_green)),
                         new CRColor("Blue",ContextCompat.getColor(c,R.color.paint_blue)),
-                        new CRColor("Pink",ContextCompat.getColor(c,R.color.paint_pink))
+                        new CRColor("Pink",ContextCompat.getColor(c,R.color.paint_pink)),
+                        new CRColor("Gray",ContextCompat.getColor(c,R.color.paint_gray))
                 };
 
         setAllColors();

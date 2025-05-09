@@ -243,12 +243,7 @@ public class CanvasView extends View implements View.OnTouchListener
         if (eraseMode) current.pType = Drawing.PaintType.ERASE;
     }
 
-    public void setPaintColor(final int color)
-    {
-//        curr_color = color;
-//        current.pColor = color;
-        curr_color = current.pColor = color;
-    }
+    public void setPaintColor(final int color) { curr_color = current.pColor = color; }
 
 //    private static void setPaintNew()
 //    {
@@ -257,7 +252,6 @@ public class CanvasView extends View implements View.OnTouchListener
 //    }
     private static void setPaintNormal(final int color)
     {
-//        paint.setColor(Color.BLACK);
         paint.setColor(color);
         paint.setStrokeWidth(paintSize);
         paint.setAlpha(255);

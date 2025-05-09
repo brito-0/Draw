@@ -67,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
         cLayout = binding.aCanvasView;
 
-//        CanvasView cView = new CanvasView(this);
-//        CanvasView cView = new CanvasView(this,binding.buttonUndo,binding.buttonRedo);
         cView = new CanvasView(this,binding.buttonUndo,binding.buttonRedo);
 
         cLayout.addView(cView);
@@ -77,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//        setSupportActionBar(binding.toolbar);
+//                setSupportActionBar(binding.toolbar);
 
 //        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 //        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
@@ -93,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
+
+        binding.buttonSaveLoad.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
 
         binding.buttonUndo.setOnClickListener(v -> cView.undoDrawings());
 
@@ -149,19 +149,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-//        binding.buttonSave.setOnClickListener(v ->
-//                new AlertDialog.Builder(this)
-//                        .setTitle("Save Drawing?")
-//                        .setMessage("...")
-//                        .setPositiveButton("Confirm",(dialog,which) ->
-//                        {
-//                            if (isWritePermissionGranted()) saveDrawing();
-//                            else requestWritePermission();
-//                        })
-//                        .setNegativeButton("Cancel",(dialog,which) -> {})
-//                        .show());
-
-        binding.buttonSave.setOnClickListener(new MultipleClickListener() {
+        binding.buttonSaveLoad.setOnClickListener(new MultipleClickListener() {
             @Override
             public void onSingleClick()
             {
@@ -250,14 +238,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
             intent.addCategory("android.intent.category.DEFAULT");
             intent.setData(Uri.parse(String.format("package:%s", getApplicationContext().getPackageName())));
-//                startActivityForResult(intent,2296);
             startActivityIfNeeded(intent,2296);
         }
         catch (Exception e)
         {
             Intent intent = new Intent();
             intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-//                startActivityForResult(intent,2296);
             startActivityIfNeeded(intent,2296);
         }
     }
@@ -282,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // read/write permission
+        // read/write permission - version R or above
         if (requestCode == 2296)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
                 if (Environment.isExternalStorageManager()) saveDrawing();
@@ -370,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
         cView.loadDrawing(loadBitmap);
         Toast.makeText(MainActivity.this,"Drawing Loaded",Toast.LENGTH_SHORT).show();
     }
+
 
 
 //    @Override
